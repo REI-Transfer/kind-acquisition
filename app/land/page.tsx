@@ -64,6 +64,7 @@ export default function LandPage() {
             disqualifiedOwnershipLengths={disqualifiedOwnershipLengths}
             allowedStates={allowedStates}
             motivationV2={config.motivationV2}
+            variant="land"
           />
         }
       />

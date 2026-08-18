@@ -10,6 +10,8 @@ import { AddressAutocomplete, type AddressDetails, type ServiceArea } from "./ad
 interface SurveyData {
   address: string
   propertyType: string
+  acreage: string
+  access: string
   isLegalOwner: string
   listedOnMarket: string
   timeline: string
@@ -86,6 +88,43 @@ const REASON_OPTIONS_V2 = [
   { id: "no-reason", label: "No reason / seeing what my house is worth" },
 ]
 
+// ─── LAND variant option sets ──────────────────────────────────────────
+// A parcel has no "condition" and no bedrooms. What actually prices Carolina
+// land is size, legal access, and whether it can ever be built on. These
+// replace the house questions when variant="land".
+const LAND_ACREAGE_OPTIONS = [
+  { id: "under-1", label: "Under 1 acre (lot)" },
+  { id: "1-to-5", label: "1 to 5 acres" },
+  { id: "5-to-20", label: "5 to 20 acres" },
+  { id: "20-to-100", label: "20 to 100 acres" },
+  { id: "100-plus", label: "100+ acres" },
+  { id: "acreage-unknown", label: "I'm not sure" },
+]
+
+const LAND_ACCESS_OPTIONS = [
+  { id: "paved-frontage", label: "It fronts a paved public road" },
+  { id: "dirt-easement", label: "Dirt road or a deeded easement" },
+  { id: "landlocked", label: "No legal access that I know of" },
+  { id: "access-unknown", label: "I'm not sure" },
+]
+
+const LAND_OWNER_OPTIONS = [
+  { id: "yes-owner", label: "Yes, I'm on the deed" },
+  { id: "yes-family", label: "I'm an heir or family member with the right to sell" },
+  { id: "no", label: "No, I'm not" },
+]
+
+const LAND_REASON_OPTIONS = [
+  { id: "inherited", label: "I inherited it" },
+  { id: "repairs", label: "Tired of paying the taxes on it" },
+  { id: "vacant", label: "I never use it" },
+  { id: "urgent-financial", label: "I can't build what I planned" },
+  { id: "relocation", label: "I moved away from it" },
+  { id: "divorce", label: "Estate, probate, or divorce" },
+  { id: "personal", label: "Timber came off it" },
+  { id: "other", label: "Better use for the money" },
+]
+
 const OWNERSHIP_LENGTH_OPTIONS = [
   { id: "less-than-3", label: "Less than 3 years" },
   { id: "3-to-5", label: "3 to 5 years" },
@@ -106,6 +145,11 @@ const SCORE_REASON: Record<string, number> = {
   'relocation': 0, 'divorce': 0, 'downsizing': 0,
   // v2 list IDs (MOTIVATION_V2). 'no-reason' DQs pre-submit so its weight is moot.
   'urgent-financial': 3, 'vacant': 2, 'personal': 1, 'no-reason': 0,
+}
+// Landlocked and unbuildable parcels are the ones most likely to actually sell
+// to us, because they are the ones an agent or auction cannot move.
+const SCORE_ACCESS: Record<string, number> = {
+  'landlocked': 3, 'dirt-easement': 2, 'access-unknown': 2, 'paved-frontage': 1,
 }
 const SCORE_CONDITION: Record<string, number> = {
   'poor': 1, 'distressed': 1,
@@ -226,17 +270,21 @@ interface SurveyCardProps {
   // These props do NOT change the form's submit, webhook, or redirect behavior.
   initialAddress?: string
   initialStep?: number
+  /** "land" swaps the house questions for parcel questions. Default keeps the house path byte-identical. */
+  variant?: "house" | "land"
   // When true (MOTIVATION_V2), render William's v2 reason list incl. the
   // "no-reason" hard-disqualifier. Passed from the server page (config.motivationV2)
   // — this client component must NOT import lib/config.
   motivationV2?: boolean
 }
 
-export function SurveyCard({ phoneDisplay = "(800) 000-0000", phoneHref = "8000000000", serviceAreas = [], disqualifiedPropertyTypes = ["mobile-home", "land", "other"], disqualifiedOwnershipLengths = [], allowedStates = [], initialAddress, initialStep, motivationV2 = false }: SurveyCardProps) {
+export function SurveyCard({ phoneDisplay = "(800) 000-0000", phoneHref = "8000000000", serviceAreas = [], disqualifiedPropertyTypes = ["mobile-home", "land", "other"], disqualifiedOwnershipLengths = [], allowedStates = [], initialAddress, initialStep, motivationV2 = false, variant = "house" }: SurveyCardProps) {
   const [step, setStep] = useState(initialStep && initialStep >= 2 && initialStep <= 8 ? initialStep : 1)
   const [surveyData, setSurveyData] = useState<SurveyData>({
     address: initialAddress ?? "",
     propertyType: "",
+    acreage: "",
+    access: "",
     isLegalOwner: "",
     listedOnMarket: "",
     timeline: "",
@@ -263,6 +311,7 @@ export function SurveyCard({ phoneDisplay = "(800) 000-0000", phoneHref = "80000
   }, [])
   const [honeypot, setHoneypot] = useState("")
 
+  const isLand = variant === "land"
   const totalSteps = 9
 
   const handleNext = async () => {
@@ -318,7 +367,9 @@ export function SurveyCard({ phoneDisplay = "(800) 000-0000", phoneHref = "80000
           email: surveyData.email,
           phone: surveyData.phone,
           address: surveyData.address,
-          propertyType: surveyData.propertyType,
+          propertyType: isLand ? 'land' : surveyData.propertyType,
+          acreage: surveyData.acreage,
+          landAccess: surveyData.access,
           isLegalOwner: surveyData.isLegalOwner,
           condition: surveyData.condition,
           timeline: surveyData.timeline,
@@ -376,11 +427,11 @@ export function SurveyCard({ phoneDisplay = "(800) 000-0000", phoneHref = "80000
   const canProceed = () => {
     switch (step) {
       case 1: return surveyData.address.trim().length > 0 && addressVerified
-      case 2: return surveyData.propertyType !== ""
+      case 2: return isLand ? surveyData.acreage !== "" : surveyData.propertyType !== ""
       case 3: return surveyData.isLegalOwner !== ""
       case 4: return surveyData.listedOnMarket !== ""
       case 5: return surveyData.timeline !== ""
-      case 6: return surveyData.condition !== ""
+      case 6: return isLand ? surveyData.access !== "" : surveyData.condition !== ""
       case 7: return surveyData.reason !== ""
       case 8: return surveyData.ownershipLength !== ""
       case 9: return (
@@ -548,8 +599,8 @@ export function SurveyCard({ phoneDisplay = "(800) 000-0000", phoneHref = "80000
         {step === 1 && (
           <div className="flex flex-col gap-4">
             <div>
-              <h2 className="text-2xl font-semibold text-gray-900">What's your property address?</h2>
-              <p className="mt-1 text-sm text-gray-500">Start typing and select your address from the dropdown.</p>
+              <h2 className="text-2xl font-semibold text-gray-900">{isLand ? "Where is the land?" : "What's your property address?"}</h2>
+              <p className="mt-1 text-sm text-gray-500">{isLand ? "An address, a nearby crossroads, or the parcel address. If the land has no address, the nearest road works." : "Start typing and select your address from the dropdown."}</p>
             </div>
             <AddressAutocomplete
               value={surveyData.address}
@@ -558,7 +609,7 @@ export function SurveyCard({ phoneDisplay = "(800) 000-0000", phoneHref = "80000
               onOutOfArea={(addr) => { setSurveyData({ ...surveyData, address: addr }); setAddressVerified(true); setAddressOutOfArea(true) }}
               serviceAreas={serviceAreas}
               allowedStates={allowedStates}
-              placeholder="Start typing your address..."
+              placeholder={isLand ? "Start typing the address or nearest road..." : "Start typing your address..."}
             />
 
           </div>
@@ -567,11 +618,13 @@ export function SurveyCard({ phoneDisplay = "(800) 000-0000", phoneHref = "80000
         {step === 2 && (
           <div className="flex flex-col gap-4">
             <div>
-              <h2 className="text-2xl font-semibold text-gray-900">What type of property is it?</h2>
-              <p className="mt-1 text-sm text-gray-500">Select the option that best describes your property.</p>
+              <h2 className="text-2xl font-semibold text-gray-900">{isLand ? "About how many acres is it?" : "What type of property is it?"}</h2>
+              <p className="mt-1 text-sm text-gray-500">{isLand ? "A rough number is fine. We'll confirm it against the county record." : "Select the option that best describes your property."}</p>
             </div>
             <div className="flex flex-col gap-2">
-              {PROPERTY_TYPE_OPTIONS.map((option) => renderOptionButton(option, surveyData.propertyType, "propertyType"))}
+              {isLand
+                ? LAND_ACREAGE_OPTIONS.map((option) => renderOptionButton(option, surveyData.acreage, "acreage"))
+                : PROPERTY_TYPE_OPTIONS.map((option) => renderOptionButton(option, surveyData.propertyType, "propertyType"))}
             </div>
           </div>
         )}
@@ -579,11 +632,11 @@ export function SurveyCard({ phoneDisplay = "(800) 000-0000", phoneHref = "80000
         {step === 3 && (
           <div className="flex flex-col gap-4">
             <div>
-              <h2 className="text-2xl font-semibold text-gray-900">Are you the legal homeowner?</h2>
-              <p className="mt-1 text-sm text-gray-500">This helps us understand who we'll be working with.</p>
+              <h2 className="text-2xl font-semibold text-gray-900">{isLand ? "Are you the legal owner of the land?" : "Are you the legal homeowner?"}</h2>
+              <p className="mt-1 text-sm text-gray-500">{isLand ? "Inherited land is often still in a parent's name. Tell us either way." : "This helps us understand who we'll be working with."}</p>
             </div>
             <div className="flex flex-col gap-2">
-              {LEGAL_OWNER_OPTIONS.map((option) => renderOptionButton(option, surveyData.isLegalOwner, "isLegalOwner"))}
+              {(isLand ? LAND_OWNER_OPTIONS : LEGAL_OWNER_OPTIONS).map((option) => renderOptionButton(option, surveyData.isLegalOwner, "isLegalOwner"))}
             </div>
           </div>
         )}
@@ -591,8 +644,8 @@ export function SurveyCard({ phoneDisplay = "(800) 000-0000", phoneHref = "80000
         {step === 4 && (
           <div className="flex flex-col gap-4">
             <div>
-              <h2 className="text-2xl font-semibold text-gray-900">Is the property currently listed on the market?</h2>
-              <p className="mt-1 text-sm text-gray-500">Let us know if the property is currently for sale.</p>
+              <h2 className="text-2xl font-semibold text-gray-900">{isLand ? "Is the land listed with anyone right now?" : "Is the property currently listed on the market?"}</h2>
+              <p className="mt-1 text-sm text-gray-500">{isLand ? "Including a land broker or an auction company." : "Let us know if the property is currently for sale."}</p>
             </div>
             <div className="flex flex-col gap-2">
               {LISTED_OPTIONS.map((option) => renderOptionButton(option, surveyData.listedOnMarket, "listedOnMarket"))}
@@ -615,11 +668,13 @@ export function SurveyCard({ phoneDisplay = "(800) 000-0000", phoneHref = "80000
         {step === 6 && (
           <div className="flex flex-col gap-4">
             <div>
-              <h2 className="text-2xl font-semibold text-gray-900">What condition is the property in?</h2>
-              <p className="mt-1 text-sm text-gray-500">Be honest - we buy houses in any condition.</p>
+              <h2 className="text-2xl font-semibold text-gray-900">{isLand ? "How do you get to the property?" : "What condition is the property in?"}</h2>
+              <p className="mt-1 text-sm text-gray-500">{isLand ? "Access matters more than anything else on land, and \"I'm not sure\" is a perfectly normal answer." : "Be honest - we buy houses in any condition."}</p>
             </div>
             <div className="flex flex-col gap-2">
-              {CONDITION_OPTIONS.map((option) => renderOptionButton(option, surveyData.condition, "condition"))}
+              {isLand
+                ? LAND_ACCESS_OPTIONS.map((option) => renderOptionButton(option, surveyData.access, "access"))
+                : CONDITION_OPTIONS.map((option) => renderOptionButton(option, surveyData.condition, "condition"))}
             </div>
           </div>
         )}
@@ -631,7 +686,7 @@ export function SurveyCard({ phoneDisplay = "(800) 000-0000", phoneHref = "80000
               <p className="mt-1 text-sm text-gray-500">This helps us understand your situation better.</p>
             </div>
             <div className="grid grid-cols-2 gap-2">
-              {(motivationV2 ? REASON_OPTIONS_V2 : REASON_OPTIONS).map((option) => renderOptionButton(option, surveyData.reason, "reason"))}
+              {(isLand ? LAND_REASON_OPTIONS : motivationV2 ? REASON_OPTIONS_V2 : REASON_OPTIONS).map((option) => renderOptionButton(option, surveyData.reason, "reason"))}
             </div>
           </div>
         )}
@@ -639,7 +694,7 @@ export function SurveyCard({ phoneDisplay = "(800) 000-0000", phoneHref = "80000
         {step === 8 && (
           <div className="flex flex-col gap-4">
             <div>
-              <h2 className="text-2xl font-semibold text-gray-900">How long have you owned the home?</h2>
+              <h2 className="text-2xl font-semibold text-gray-900">{isLand ? "How long have you owned the land?" : "How long have you owned the home?"}</h2>
               <p className="mt-1 text-sm text-gray-500">This helps us tailor your offer.</p>
             </div>
             <div className="flex flex-col gap-2">
