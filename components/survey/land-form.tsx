@@ -30,8 +30,22 @@ import { ArrowLeft, Check } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { captureTrackingData, readGfSid } from "@/lib/tracking"
+import { formatPhoneNumber, validatePhone, validateEmail, phoneDigits } from "@/lib/contact-validation"
 
-const STEPS = ["Contact", "Location", "Specifics"] as const
+const STEPS = ["Contact", "Ownership", "Location", "Specifics"] as const
+
+// Same wording and same ids as the house survey, so a land lead and a house
+// lead disqualify identically downstream in n8n.
+const LEGAL_OWNER_OPTIONS = [
+  { id: "yes-owner", label: "Yes, I'm on the deed" },
+  { id: "yes-family", label: "I'm an heir or family member with the right to sell" },
+  { id: "no", label: "No, I'm not" },
+]
+const LISTED_OPTIONS = [
+  { id: "not-listed", label: "No, it is not listed" },
+  { id: "listed-realtor", label: "Yes, listed with a realtor" },
+  { id: "listed-fsbo", label: "Yes, listed for sale by owner" },
+]
 
 // The shadcn Input is bg-transparent and inherits its colour, and `body` applies
 // text-foreground — which the bare :root defines as near-white. On this white
@@ -47,12 +61,14 @@ const SELECT =
 
 type Data = {
   firstName: string; lastName: string; phone: string; email: string
+  isLegalOwner: string; listedOnMarket: string
   county: string; state: string
   parcelNumber: string; acres: string; timeline: string
 }
 
 const EMPTY: Data = {
   firstName: "", lastName: "", phone: "", email: "",
+  isLegalOwner: "", listedOnMarket: "",
   county: "", state: "",
   parcelNumber: "", acres: "", timeline: "",
 }
@@ -87,21 +103,40 @@ export function LandForm({
   const [d, setD] = useState<Data>(EMPTY)
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState("")
+  const [touched, setTouched] = useState<{ phone?: boolean; email?: boolean }>({})
+  // Honeypot: real people never see or fill this. Bots fill everything.
+  const [website, setWebsite] = useState("")
+  // Bots submit near-instantly. A human cannot complete step 1 in under ~3s.
+  const [mountedAt] = useState(() => Date.now())
+  const [dq, setDq] = useState<"" | "notOwner" | "listed">("")
 
-  const set = (k: keyof Data, v: string) => setD((p) => ({ ...p, [k]: v }))
+  const set = (k: keyof Data, v: string) =>
+    setD((p) => ({ ...p, [k]: k === "phone" ? formatPhoneNumber(v) : v }))
+
+  const phoneCheck = validatePhone(d.phone)
+  const emailCheck = validateEmail(d.email)
+  const phoneError = touched.phone && d.phone !== "" && !phoneCheck.valid ? phoneCheck.msg : ""
+  const emailError = touched.email && d.email !== "" && !emailCheck.valid ? emailCheck.msg : ""
 
   const states = allowedStates.length ? allowedStates : ["NC", "SC"]
-  const digits = d.phone.replace(/\D/g, "").replace(/^1/, "")
 
   const canAdvance =
     step === 0
-      ? d.firstName.trim() !== "" && d.lastName.trim() !== "" && digits.length === 10 &&
-        /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(d.email.trim())
+      ? d.firstName.trim() !== "" && d.lastName.trim() !== "" &&
+        phoneCheck.valid && emailCheck.valid
       : step === 1
+      ? d.isLegalOwner !== "" && d.listedOnMarket !== ""
+      : step === 2
       ? d.county.trim() !== "" && d.state !== ""
       : true
 
   async function submit() {
+    // Honeypot tripped, or submitted impossibly fast. Show success to the bot
+    // and send nothing: never tell an automated client why it failed.
+    if (website.trim() !== "" || Date.now() - mountedAt < 3000) {
+      window.location.href = "/thank-you"
+      return
+    }
     setSubmitting(true); setError("")
     // ?? binds looser than +, so the parens matter: without them a set timeline
     // would swallow the acreage score entirely.
@@ -112,7 +147,7 @@ export function LandForm({
       lastName: d.lastName.trim(),
       name: `${d.firstName.trim()} ${d.lastName.trim()}`.trim(),
       email: d.email.trim().toLowerCase(),
-      phone: d.phone,
+      phone: phoneDigits(d.phone),
       // Land identity: county + state + APN, not a street address.
       address: [d.parcelNumber && `Parcel ${d.parcelNumber}`, `${d.county} County`, d.state]
         .filter(Boolean).join(", "),
@@ -121,6 +156,8 @@ export function LandForm({
       parcelNumber: d.parcelNumber.trim(),
       acres: d.acres.trim(),
       propertyType: "land",
+      isLegalOwner: d.isLegalOwner,
+      listedOnMarket: d.listedOnMarket,
       timeline: d.timeline,
       source: "Land Form",
       submittedAt: new Date().toISOString(),
@@ -130,6 +167,8 @@ export function LandForm({
       meta_event_id: eventId,
       meta_event_name: "Lead",
       meta_value: score * 25,
+      website, // honeypot, must be empty. Server rejects if filled.
+      form_render_ms: Date.now() - mountedAt,
       gf_sid: readGfSid(),
       ...captureTrackingData(),
     }
@@ -152,8 +191,26 @@ export function LandForm({
 
   const next = () => (step === STEPS.length - 1 ? submit() : setStep(step + 1))
 
+  if (dq) {
+    return (
+      <div className="relative rounded-xl bg-white p-8 text-center text-gray-900 shadow-xl">
+        <h2 className="text-xl font-bold">We&apos;re not the right fit right now</h2>
+        <p className="mt-3 text-[15px] leading-relaxed text-gray-600">
+          {dq === "notOwner"
+            ? "We can only make an offer to the legal owner or an heir with the right to sell. If that changes, or if someone else on the deed wants to talk, we're here."
+            : "While the land is listed with a broker or at auction, we'd be stepping on an existing agreement. Come back to us once that listing ends and we'll take a look."}
+        </p>
+        {phoneDisplay && (
+          <p className="mt-5 text-sm text-gray-500">
+            Questions? <a href={`tel:${phoneHref}`} className="font-semibold text-gray-800 underline">{phoneDisplay}</a>
+          </p>
+        )}
+      </div>
+    )
+  }
+
   return (
-    <div className="rounded-xl bg-white p-6 text-gray-900 shadow-xl sm:p-8">
+    <div className="relative rounded-xl bg-white p-6 text-gray-900 shadow-xl sm:p-8">
       <div className="text-center">
         <h2 className="text-[22px] font-bold leading-tight text-gray-900 sm:text-2xl">
           Get A FREE, No-Obligation Cash Offer
@@ -184,16 +241,80 @@ export function LandForm({
                 <Input className={FIELD} value={d.lastName} onChange={(e) => set("lastName", e.target.value)} autoComplete="family-name" />
               </Field>
             </div>
-            <Field label="Phone" required>
-              <Input className={FIELD} value={d.phone} onChange={(e) => set("phone", e.target.value)} type="tel" inputMode="tel" autoComplete="tel" />
+            <Field label="Phone" required error={phoneError}>
+              <Input
+                className={FIELD}
+                value={d.phone}
+                onChange={(e) => set("phone", e.target.value)}
+                onBlur={() => setTouched((t) => ({ ...t, phone: true }))}
+                type="tel"
+                inputMode="tel"
+                autoComplete="tel"
+                placeholder="(704) 555-0142"
+                aria-invalid={!!phoneError}
+              />
             </Field>
-            <Field label="Email Address" required>
-              <Input className={FIELD} value={d.email} onChange={(e) => set("email", e.target.value)} type="email" inputMode="email" autoComplete="email" />
+            <Field label="Email Address" required error={emailError}>
+              <Input
+                className={FIELD}
+                value={d.email}
+                onChange={(e) => set("email", e.target.value)}
+                onBlur={() => setTouched((t) => ({ ...t, email: true }))}
+                type="email"
+                inputMode="email"
+                autoComplete="email"
+                placeholder="you@example.com"
+                aria-invalid={!!emailError}
+              />
             </Field>
+            {/* Honeypot. Off-screen, unfocusable, hidden from screen readers. */}
+            <div aria-hidden="true" className="pointer-events-none absolute left-[-9999px] h-0 w-0 overflow-hidden">
+              <label htmlFor="website-url">Website</label>
+              <input
+                id="website-url"
+                name="website"
+                type="text"
+                tabIndex={-1}
+                autoComplete="off"
+                value={website}
+                onChange={(e) => setWebsite(e.target.value)}
+              />
+            </div>
           </>
         )}
 
         {step === 1 && (
+          <>
+            <div>
+              <p className="mb-2 text-sm font-semibold text-gray-800">Are you the legal owner of the land?</p>
+              <div className="flex flex-col gap-2">
+                {LEGAL_OWNER_OPTIONS.map((o) => (
+                  <OptionButton
+                    key={o.id}
+                    label={o.label}
+                    selected={d.isLegalOwner === o.id}
+                    onClick={() => { set("isLegalOwner", o.id); if (o.id === "no") setDq("notOwner") }}
+                  />
+                ))}
+              </div>
+            </div>
+            <div className="mt-2">
+              <p className="mb-2 text-sm font-semibold text-gray-800">Is it currently listed on the market?</p>
+              <div className="flex flex-col gap-2">
+                {LISTED_OPTIONS.map((o) => (
+                  <OptionButton
+                    key={o.id}
+                    label={o.label}
+                    selected={d.listedOnMarket === o.id}
+                    onClick={() => { set("listedOnMarket", o.id); if (o.id !== "not-listed") setDq("listed") }}
+                  />
+                ))}
+              </div>
+            </div>
+          </>
+        )}
+
+        {step === 2 && (
           <>
             <p className="text-sm text-gray-500">
               Vacant land often has no street address. The county is enough for us to pull the parcel.
@@ -214,7 +335,7 @@ export function LandForm({
           </>
         )}
 
-        {step === 2 && (
+        {step === 3 && (
           <>
             <Field label="Parcel Number / APN" hint="Optional. We will look it up if you do not have it.">
               <Input className={FIELD} value={d.parcelNumber} onChange={(e) => set("parcelNumber", e.target.value)} placeholder="e.g. 06-123-456" />
@@ -265,14 +386,32 @@ export function LandForm({
   )
 }
 
-function Field({ label, hint, required, children }: { label: string; hint?: string; required?: boolean; children: React.ReactNode }) {
+function OptionButton({ label, selected, onClick }: { label: string; selected: boolean; onClick: () => void }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`w-full rounded-lg border px-4 py-3 text-left text-[15px] transition ${
+        selected
+          ? "border-[#F9A61A] bg-[#FEF7EA] font-semibold text-gray-900"
+          : "border-gray-300 bg-white text-gray-800 hover:border-gray-400"
+      }`}
+    >
+      {label}
+    </button>
+  )
+}
+
+function Field({ label, hint, required, error, children }: { label: string; hint?: string; required?: boolean; error?: string; children: React.ReactNode }) {
   return (
     <label className="block">
       <span className="mb-1.5 block text-sm font-semibold text-gray-800">
         {label}{required && <span className="text-[#C77F0B]"> *</span>}
       </span>
       {children}
-      {hint && <span className="mt-1.5 block text-xs text-gray-500">{hint}</span>}
+      {error
+        ? <span className="mt-1.5 block text-xs font-medium text-red-600">{error}</span>
+        : hint && <span className="mt-1.5 block text-xs text-gray-500">{hint}</span>}
     </label>
   )
 }
