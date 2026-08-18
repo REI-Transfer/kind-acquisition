@@ -124,3 +124,21 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* /land hero carousel — cross-fading photo slides behind the scrim.
+   Three slides, 21s loop, each visible ~7s. Class-scoped so nothing else moves. */
+.land-slide {
+  opacity: 0;
+  animation: land-cycle 21s infinite;
+}
+@keyframes land-cycle {
+  0%   { opacity: 0 }
+  4%   { opacity: 1 }
+  30%  { opacity: 1 }
+  36%  { opacity: 0 }
+  100% { opacity: 0 }
+}
+@media (prefers-reduced-motion: reduce) {
+  .land-slide { animation: none; opacity: 0 }
+  .land-slide:first-child { opacity: 1 }
+}
