@@ -87,14 +87,14 @@ export function LandUI({ form, heroImages }: { form: ReactNode; heroImages: stri
           className="absolute inset-0"
           style={{ background: "linear-gradient(100deg,rgba(8,8,8,.92) 0%,rgba(8,8,8,.74) 44%,rgba(8,8,8,.42) 100%)" }}
         />
-        <div className="relative mx-auto grid max-w-7xl gap-8 px-4 py-10 lg:grid-cols-[1.02fr_.98fr] lg:items-center lg:gap-12 lg:px-8 lg:py-16">
+        <div className="relative mx-auto grid max-w-7xl gap-10 px-4 py-14 lg:grid-cols-[1.02fr_.98fr] lg:items-center lg:gap-16 lg:px-8 lg:py-24">
           <div>
-            <h1 className="text-center text-3xl font-bold uppercase leading-[1.1] text-white text-balance sm:text-4xl lg:text-left lg:text-[3.15rem]">
+            <h1 className="text-center text-[2.15rem] font-bold uppercase leading-[1.12] text-white text-balance sm:text-[2.75rem] lg:text-left lg:text-[3.6rem] lg:leading-[1.08]">
               We Buy Vacant Land In The Carolinas For <span style={{ color: AMBER }}>Cash</span>
             </h1>
-            <ul className="mt-6 grid gap-2.5 sm:grid-cols-2">
+            <ul className="mt-8 grid gap-3.5 sm:grid-cols-2">
               {["Offer in 24 hours", "We pay all closing costs", "Any condition, any access", "North & South Carolina"].map((b) => (
-                <li key={b} className="flex items-center gap-2.5 text-[15px] font-semibold text-white">
+                <li key={b} className="flex items-center gap-3 text-base font-semibold text-white">
                   <svg viewBox="0 0 20 20" className="h-5 w-5 shrink-0" style={{ fill: AMBER }} aria-hidden="true">
                     <path d="M10 0a10 10 0 100 20 10 10 0 000-20zm4.7 7.6l-5.3 6a1 1 0 01-1.5 0L5.3 11a1 1 0 111.5-1.3l1.9 2.1 4.5-5.1a1 1 0 111.5 1.3z" />
                   </svg>
@@ -102,7 +102,7 @@ export function LandUI({ form, heroImages }: { form: ReactNode; heroImages: stri
                 </li>
               ))}
             </ul>
-            <p className="mt-5 text-center text-sm text-neutral-300 lg:text-left">
+            <p className="mt-7 text-center text-[15px] leading-relaxed text-neutral-300 lg:text-left">
               Carolina land often has no street address. The county and a rough location is enough to start.
             </p>
           </div>
@@ -111,16 +111,16 @@ export function LandUI({ form, heroImages }: { form: ReactNode; heroImages: stri
       </div>
 
       {/* ── process ── */}
-      <section className="bg-white py-14 md:py-20">
+      <section className="bg-white py-20 md:py-28">
         <div className="mx-auto max-w-7xl px-4 lg:px-8">
-          <h2 className="text-center text-3xl font-bold text-neutral-900 md:text-4xl">What&apos;s the process?</h2>
-          <div className="mx-auto mt-4 h-1 w-16 rounded" style={{ backgroundColor: AMBER }} />
-          <ol className="mt-10 grid gap-8 sm:grid-cols-2 lg:grid-cols-5 lg:gap-5">
+          <h2 className="text-center text-[1.9rem] font-bold text-neutral-900 md:text-[2.5rem] md:leading-[1.15]">What&apos;s the process?</h2>
+          <div className="mx-auto mt-5 h-1 w-20 rounded" style={{ backgroundColor: AMBER }} />
+          <ol className="mt-14 grid gap-10 sm:grid-cols-2 lg:grid-cols-5 lg:gap-7">
             {PROCESS.map((s) => (
               <li key={s.n} className="text-center">
-                <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full text-lg font-bold text-neutral-900" style={{ backgroundColor: AMBER }}>{s.n}</div>
-                <h3 className="mt-3 text-base font-bold text-neutral-900">{s.t}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-neutral-600">{s.d}</p>
+                <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full text-xl font-bold text-neutral-900" style={{ backgroundColor: AMBER }}>{s.n}</div>
+                <h3 className="mt-4 text-[17px] font-bold text-neutral-900">{s.t}</h3>
+                <p className="mt-2.5 text-[15px] leading-relaxed text-neutral-600">{s.d}</p>
               </li>
             ))}
           </ol>
@@ -128,28 +128,28 @@ export function LandUI({ form, heroImages }: { form: ReactNode; heroImages: stri
       </section>
 
       {/* ── gradient CTA strip ── */}
-      <div className="py-12 text-center md:py-16" style={{ background: `linear-gradient(100deg, ${AMBER} 0%, ${AMBER_DK} 100%)` }}>
+      <div className="py-16 text-center md:py-24" style={{ background: `linear-gradient(100deg, ${AMBER} 0%, ${AMBER_DK} 100%)` }}>
         <div className="mx-auto max-w-3xl px-4">
-          <h2 className="text-3xl font-bold text-neutral-900 md:text-4xl">Sell Your Land The Easy Way</h2>
-          <p className="mx-auto mt-3 max-w-xl text-[17px] text-neutral-900/80">
+          <h2 className="text-[1.9rem] font-bold text-neutral-900 md:text-[2.5rem] md:leading-[1.15]">Sell Your Land The Easy Way</h2>
+          <p className="mx-auto mt-4 max-w-xl text-[18px] leading-[1.65] text-neutral-900/80">
             A straightforward process that walks you through every step, so selling your land is smooth and worry-free.
           </p>
-          <a href="#top" className="mt-6 inline-block rounded bg-neutral-900 px-8 py-4 text-base font-bold uppercase tracking-wide text-white">Get Your Cash Offer Now</a>
+          <a href="#top" className="mt-8 inline-block rounded bg-neutral-900 px-10 py-[18px] text-base font-bold uppercase tracking-wide text-white">Get Your Cash Offer Now</a>
         </div>
       </div>
 
       {/* ── pillars ── */}
-      <section className="border-t border-neutral-200 py-14 md:py-20" style={{ backgroundColor: "#FEF7EA" }}>
+      <section className="border-t border-neutral-200 py-20 md:py-28" style={{ backgroundColor: "#FEF7EA" }}>
         <div className="mx-auto max-w-6xl px-4 lg:px-8">
-          <h2 className="text-center text-3xl font-bold text-neutral-900 md:text-4xl">Why work with Kind Acquisition?</h2>
-          <p className="mx-auto mt-4 max-w-2xl text-center text-[17px] text-neutral-600">
+          <h2 className="text-center text-[1.9rem] font-bold text-neutral-900 md:text-[2.5rem] md:leading-[1.15]">Why work with Kind Acquisition?</h2>
+          <p className="mx-auto mt-6 max-w-2xl text-center text-[18px] leading-[1.7] text-neutral-600">
             There are plenty of realtors, land buyers, and out-of-state companies making offers on Carolina land right now. Here is what separates us.
           </p>
-          <div className="mt-9 grid gap-5 md:grid-cols-2">
+          <div className="mt-12 grid gap-7 md:grid-cols-2">
             {PILLARS.map((p) => (
-              <div key={p.t} className="rounded-lg bg-white p-6 shadow-sm" style={{ borderTop: `4px solid ${AMBER}` }}>
-                <h3 className="text-lg font-bold text-neutral-900">{p.t}</h3>
-                <p className="mt-2 text-[15px] leading-relaxed text-neutral-600">{p.d}</p>
+              <div key={p.t} className="rounded-lg bg-white p-8 shadow-sm" style={{ borderTop: `4px solid ${AMBER}` }}>
+                <h3 className="text-xl font-bold text-neutral-900">{p.t}</h3>
+                <p className="mt-3 text-[16px] leading-[1.7] text-neutral-600">{p.d}</p>
               </div>
             ))}
           </div>
@@ -157,37 +157,37 @@ export function LandUI({ form, heroImages }: { form: ReactNode; heroImages: stri
       </section>
 
       {/* ── auction objection ── */}
-      <section className="bg-neutral-950 py-14 text-white md:py-20">
+      <section className="bg-neutral-950 py-20 text-white md:py-28">
         <div className="mx-auto max-w-3xl px-4 lg:px-8">
-          <h2 className="text-3xl font-bold md:text-4xl">Would an auction or an agent get you more?</h2>
-          <div className="mt-4 h-1 w-16 rounded" style={{ backgroundColor: AMBER }} />
-          <p className="mt-6 text-[17px] leading-relaxed text-neutral-300">
+          <h2 className="text-[1.9rem] font-bold md:text-[2.5rem] md:leading-[1.15]">Would an auction or an agent get you more?</h2>
+          <div className="mt-5 h-1 w-20 rounded" style={{ backgroundColor: AMBER }} />
+          <p className="mt-8 text-[18px] leading-[1.75] text-neutral-300">
             Sometimes, honestly, yes. If your tract is large, has road frontage and water, and sits in a growing county, an auction can beat a cash offer. We will tell you when we think that is your situation.
           </p>
-          <p className="mt-4 text-[17px] leading-relaxed text-neutral-300">
+          <p className="mt-5 text-[18px] leading-[1.75] text-neutral-300">
             What an auction does not put up front is the rest of it. You pay the marketing. You wait for a sale date. You may pay a buyer&apos;s premium on top of a commission. And on the day, the price is whoever shows up.
           </p>
-          <p className="mt-4 text-[17px] leading-relaxed text-neutral-300">
+          <p className="mt-5 text-[18px] leading-[1.75] text-neutral-300">
             Listing has the same problem in slower form. Raw land does not qualify for an ordinary mortgage, so your buyer pool is people paying cash, and Carolina tracts routinely sit while the county tax bill keeps arriving.
           </p>
-          <p className="mt-6 text-[17px] font-semibold leading-relaxed">
+          <p className="mt-8 text-[18px] font-semibold leading-[1.7]">
             Our offer is a number, in writing, in a day, that does not move. Compare it against anything you like. If somebody beats it, take theirs.
           </p>
         </div>
       </section>
 
       {/* ── verify us ── */}
-      <section className="bg-white py-14 md:py-20">
+      <section className="bg-white py-20 md:py-28">
         <div className="mx-auto max-w-3xl px-4 lg:px-8">
-          <h2 className="text-3xl font-bold text-neutral-900 md:text-4xl">Check that we are real before you talk to us</h2>
-          <p className="mt-5 text-[17px] leading-relaxed text-neutral-600">
+          <h2 className="text-[1.9rem] font-bold text-neutral-900 md:text-[2.5rem] md:leading-[1.15]">Check that we are real before you talk to us</h2>
+          <p className="mt-6 text-[18px] leading-[1.75] text-neutral-600">
             Vacant land is the most impersonated asset in real estate. Nobody lives on it, so a fake seller can put a parcel under contract and disappear with a deposit before the real owner notices. That has made every honest land buyer look suspicious. Here is the checklist landowners are told to run. We would rather you ran it now than wondered later.
           </p>
-          <ul className="mt-7 space-y-4">
+          <ul className="mt-9 space-y-5">
             {VERIFY.map(([t, d]) => (
-              <li key={t} className="rounded-lg border border-neutral-200 p-5">
+              <li key={t} className="rounded-lg border border-neutral-200 p-6">
                 <p className="font-semibold text-neutral-900">{t}</p>
-                <p className="mt-1.5 text-[15px] leading-relaxed text-neutral-600">{d}</p>
+                <p className="mt-2 text-[16px] leading-[1.7] text-neutral-600">{d}</p>
               </li>
             ))}
           </ul>
@@ -195,17 +195,17 @@ export function LandUI({ form, heroImages }: { form: ReactNode; heroImages: stri
       </section>
 
       {/* ── reasons ── */}
-      <section className="border-t border-neutral-200 py-14 md:py-20" style={{ backgroundColor: "#FEF7EA" }}>
+      <section className="border-t border-neutral-200 py-20 md:py-28" style={{ backgroundColor: "#FEF7EA" }}>
         <div className="mx-auto max-w-6xl px-4 lg:px-8">
-          <h2 className="text-center text-3xl font-bold text-neutral-900 md:text-4xl">Reasons people sell Carolina land</h2>
-          <p className="mx-auto mt-4 max-w-2xl text-center text-[16px] text-neutral-600">
+          <h2 className="text-center text-[1.9rem] font-bold text-neutral-900 md:text-[2.5rem] md:leading-[1.15]">Reasons people sell Carolina land</h2>
+          <p className="mx-auto mt-6 max-w-2xl text-center text-[17px] leading-[1.7] text-neutral-600">
             Land does not fall apart the way a house does. It just quietly costs you money every year for something you never use.
           </p>
-          <div className="mt-9 grid gap-x-8 gap-y-7 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="mt-12 grid gap-x-10 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
             {REASONS.map((r) => (
               <div key={r.t} className="pt-4" style={{ borderTop: `3px solid ${AMBER}` }}>
-                <h3 className="text-[15px] font-bold text-neutral-900">{r.t}</h3>
-                <p className="mt-1.5 text-sm leading-relaxed text-neutral-600">{r.d}</p>
+                <h3 className="text-[16px] font-bold text-neutral-900">{r.t}</h3>
+                <p className="mt-2 text-[15px] leading-[1.65] text-neutral-600">{r.d}</p>
               </div>
             ))}
           </div>
@@ -213,17 +213,17 @@ export function LandUI({ form, heroImages }: { form: ReactNode; heroImages: stri
       </section>
 
       {/* ── faq ── */}
-      <section className="bg-white py-14 md:py-20">
+      <section className="bg-white py-20 md:py-28">
         <div className="mx-auto max-w-3xl px-4 lg:px-8">
-          <h2 className="text-center text-3xl font-bold text-neutral-900 md:text-4xl">Common questions</h2>
-          <div className="mt-8 divide-y divide-neutral-200 border-y border-neutral-200">
+          <h2 className="text-center text-[1.9rem] font-bold text-neutral-900 md:text-[2.5rem] md:leading-[1.15]">Common questions</h2>
+          <div className="mt-11 divide-y divide-neutral-200 border-y border-neutral-200">
             {FAQS.map(([q, a]) => (
-              <details key={q} className="group py-4">
+              <details key={q} className="group py-5">
                 <summary className="flex cursor-pointer list-none items-start justify-between gap-4 font-semibold text-neutral-900">
                   {q}
                   <span className="mt-0.5 shrink-0 text-xl leading-none transition group-open:rotate-45" style={{ color: AMBER_DK }} aria-hidden="true">+</span>
                 </summary>
-                <p className="mt-3 text-[15px] leading-relaxed text-neutral-600">{a}</p>
+                <p className="mt-3.5 text-[16px] leading-[1.7] text-neutral-600">{a}</p>
               </details>
             ))}
           </div>
@@ -231,13 +231,13 @@ export function LandUI({ form, heroImages }: { form: ReactNode; heroImages: stri
       </section>
 
       {/* ── closing strip ── */}
-      <div className="py-12 text-center md:py-16" style={{ background: `linear-gradient(100deg, ${AMBER} 0%, ${AMBER_DK} 100%)` }}>
+      <div className="py-16 text-center md:py-24" style={{ background: `linear-gradient(100deg, ${AMBER} 0%, ${AMBER_DK} 100%)` }}>
         <div className="mx-auto max-w-3xl px-4">
-          <h2 className="text-3xl font-bold text-neutral-900 md:text-4xl">Turn Your Carolina Land Into Cash</h2>
-          <p className="mx-auto mt-3 max-w-xl text-[17px] text-neutral-900/80">
+          <h2 className="text-[1.9rem] font-bold text-neutral-900 md:text-[2.5rem] md:leading-[1.15]">Turn Your Carolina Land Into Cash</h2>
+          <p className="mx-auto mt-4 max-w-xl text-[18px] leading-[1.65] text-neutral-900/80">
             One business day, no fee, no obligation. If the number is not right for you, nothing happens.
           </p>
-          <a href="#top" className="mt-6 inline-block rounded bg-neutral-900 px-8 py-4 text-base font-bold uppercase tracking-wide text-white">Get My Cash Offer</a>
+          <a href="#top" className="mt-8 inline-block rounded bg-neutral-900 px-10 py-[18px] text-base font-bold uppercase tracking-wide text-white">Get My Cash Offer</a>
         </div>
       </div>
     </>
