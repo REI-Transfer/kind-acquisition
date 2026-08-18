@@ -134,7 +134,7 @@ export function LandForm({
     // Honeypot tripped, or submitted impossibly fast. Show success to the bot
     // and send nothing: never tell an automated client why it failed.
     if (website.trim() !== "" || Date.now() - mountedAt < 3000) {
-      window.location.href = "/thank-you"
+      window.location.href = "/land/thank-you"
       return
     }
     setSubmitting(true); setError("")
@@ -182,7 +182,7 @@ export function LandForm({
         method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload),
       })
       if (!r.ok) throw new Error("submit failed")
-      window.location.href = "/thank-you"
+      window.location.href = "/land/thank-you"
     } catch {
       setError("Something went wrong. Please call us and we'll take your details directly.")
       setSubmitting(false)
