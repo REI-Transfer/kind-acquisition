@@ -311,7 +311,18 @@ export function SurveyCard({ phoneDisplay = "(800) 000-0000", phoneHref = "80000
   }, [])
   const [honeypot, setHoneypot] = useState("")
 
+  const contactValid = () =>
+    surveyData.firstName.trim().length > 0 &&
+    surveyData.lastName.trim().length > 0 &&
+    surveyData.email.trim().length > 0 &&
+    surveyData.phone.trim().length > 0
   const isLand = variant === "land"
+  // Slot order. House keeps its historic sequence exactly. Land follows the
+  // proven category order: contact, then where, then the parcel specifics.
+  const SLOTS = isLand
+    ? ["contact", "address", "acreage", "owner", "listed", "timeline", "access", "reason", "ownership"] as const
+    : ["address", "propertyType", "owner", "listed", "timeline", "condition", "reason", "ownership", "contact"] as const
+  const slot = SLOTS[step - 1]
   const totalSteps = 9
 
   const handleNext = async () => {
@@ -426,20 +437,15 @@ export function SurveyCard({ phoneDisplay = "(800) 000-0000", phoneHref = "80000
 
   const canProceed = () => {
     switch (step) {
-      case 1: return surveyData.address.trim().length > 0 && addressVerified
-      case 2: return isLand ? surveyData.acreage !== "" : surveyData.propertyType !== ""
-      case 3: return surveyData.isLegalOwner !== ""
-      case 4: return surveyData.listedOnMarket !== ""
-      case 5: return surveyData.timeline !== ""
-      case 6: return isLand ? surveyData.access !== "" : surveyData.condition !== ""
-      case 7: return surveyData.reason !== ""
-      case 8: return surveyData.ownershipLength !== ""
-      case 9: return (
-        surveyData.firstName.trim().length > 0 &&
-        surveyData.lastName.trim().length > 0 &&
-        surveyData.email.trim().length > 0 &&
-        surveyData.phone.trim().length > 0
-      )
+      case 1: return slot === "contact" ? contactValid() : surveyData.address.trim().length > 0 && addressVerified
+      case 2: return isLand ? (surveyData.address.trim().length > 0 && addressVerified) : surveyData.propertyType !== ""
+      case 3: return isLand ? surveyData.acreage !== "" : surveyData.isLegalOwner !== ""
+      case 4: return isLand ? surveyData.isLegalOwner !== "" : surveyData.listedOnMarket !== ""
+      case 5: return isLand ? surveyData.listedOnMarket !== "" : surveyData.timeline !== ""
+      case 6: return isLand ? surveyData.timeline !== "" : surveyData.condition !== ""
+      case 7: return isLand ? surveyData.access !== "" : surveyData.reason !== ""
+      case 8: return isLand ? surveyData.reason !== "" : surveyData.ownershipLength !== ""
+      case 9: return isLand ? surveyData.ownershipLength !== "" : contactValid()
       default: return false
     }
   }
@@ -596,7 +602,7 @@ export function SurveyCard({ phoneDisplay = "(800) 000-0000", phoneHref = "80000
           </div>
         </div>
 
-        {step === 1 && (
+        {slot === "address" && (
           <div className="flex flex-col gap-4">
             <div>
               <h2 className="text-2xl font-semibold text-gray-900">{isLand ? "Where is the land?" : "What's your property address?"}</h2>
@@ -615,7 +621,7 @@ export function SurveyCard({ phoneDisplay = "(800) 000-0000", phoneHref = "80000
           </div>
         )}
 
-        {step === 2 && (
+        {(slot === "propertyType" || slot === "acreage") && (
           <div className="flex flex-col gap-4">
             <div>
               <h2 className="text-2xl font-semibold text-gray-900">{isLand ? "About how many acres is it?" : "What type of property is it?"}</h2>
@@ -629,7 +635,7 @@ export function SurveyCard({ phoneDisplay = "(800) 000-0000", phoneHref = "80000
           </div>
         )}
 
-        {step === 3 && (
+        {slot === "owner" && (
           <div className="flex flex-col gap-4">
             <div>
               <h2 className="text-2xl font-semibold text-gray-900">{isLand ? "Are you the legal owner of the land?" : "Are you the legal homeowner?"}</h2>
@@ -641,7 +647,7 @@ export function SurveyCard({ phoneDisplay = "(800) 000-0000", phoneHref = "80000
           </div>
         )}
 
-        {step === 4 && (
+        {slot === "listed" && (
           <div className="flex flex-col gap-4">
             <div>
               <h2 className="text-2xl font-semibold text-gray-900">{isLand ? "Is the land listed with anyone right now?" : "Is the property currently listed on the market?"}</h2>
@@ -653,7 +659,7 @@ export function SurveyCard({ phoneDisplay = "(800) 000-0000", phoneHref = "80000
           </div>
         )}
 
-        {step === 5 && (
+        {slot === "timeline" && (
           <div className="flex flex-col gap-4">
             <div>
               <h2 className="text-2xl font-semibold text-gray-900">How fast are you looking to sell?</h2>
@@ -665,7 +671,7 @@ export function SurveyCard({ phoneDisplay = "(800) 000-0000", phoneHref = "80000
           </div>
         )}
 
-        {step === 6 && (
+        {(slot === "condition" || slot === "access") && (
           <div className="flex flex-col gap-4">
             <div>
               <h2 className="text-2xl font-semibold text-gray-900">{isLand ? "How do you get to the property?" : "What condition is the property in?"}</h2>
@@ -679,7 +685,7 @@ export function SurveyCard({ phoneDisplay = "(800) 000-0000", phoneHref = "80000
           </div>
         )}
 
-        {step === 7 && (
+        {slot === "reason" && (
           <div className="flex flex-col gap-4">
             <div>
               <h2 className="text-2xl font-semibold text-gray-900">What's your reason for selling?</h2>
@@ -691,7 +697,7 @@ export function SurveyCard({ phoneDisplay = "(800) 000-0000", phoneHref = "80000
           </div>
         )}
 
-        {step === 8 && (
+        {slot === "ownership" && (
           <div className="flex flex-col gap-4">
             <div>
               <h2 className="text-2xl font-semibold text-gray-900">{isLand ? "How long have you owned the land?" : "How long have you owned the home?"}</h2>
@@ -703,11 +709,11 @@ export function SurveyCard({ phoneDisplay = "(800) 000-0000", phoneHref = "80000
           </div>
         )}
 
-        {step === 9 && (
+        {slot === "contact" && (
           <div className="flex flex-col gap-4">
             <div>
-              <h2 className="text-2xl font-semibold text-gray-900">How can we reach you?</h2>
-              <p className="mt-1 text-sm text-gray-500">We'll use this to send you your cash offer.</p>
+              <h2 className="text-2xl font-semibold text-gray-900">{isLand ? "Who should we send the offer to?" : "How can we reach you?"}</h2>
+              <p className="mt-1 text-sm text-gray-500">{isLand ? "So we can send your written offer. We do not sell or share your details." : "We'll use this to send you your cash offer."}</p>
             </div>
             <div className="flex flex-col gap-3">
               <div className="grid grid-cols-2 gap-3">
