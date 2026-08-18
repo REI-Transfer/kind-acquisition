@@ -40,6 +40,16 @@ export async function POST(request: Request) {
 
     const data = await request.json()
 
+    // Honeypot: a hidden field no human can see or tab into. Bots fill it.
+    // Answer 200 so an automated client learns nothing, but forward nothing.
+    if (typeof data.website === "string" && data.website.trim() !== "") {
+      return NextResponse.json({ success: true })
+    }
+    // Submitted faster than a person can type a name, phone and email.
+    if (typeof data.form_render_ms === "number" && data.form_render_ms < 3000) {
+      return NextResponse.json({ success: true })
+    }
+
     // Server-side validation
     const phone = (data.phone || "").replace(/\D/g, "").replace(/^1/, "")
     if (phone.length !== 10) {
