@@ -33,6 +33,18 @@ import { captureTrackingData, readGfSid } from "@/lib/tracking"
 
 const STEPS = ["Contact", "Location", "Specifics"] as const
 
+// The shadcn Input is bg-transparent and inherits its colour, and `body` applies
+// text-foreground — which the bare :root defines as near-white. On this white
+// card that meant white text on white: you could not see what you typed.
+// Colour and background are set explicitly here so no theme token can break it.
+const FIELD =
+  "bg-white text-gray-900 placeholder:text-gray-400 border-gray-300 " +
+  "focus-visible:border-[#F9A61A] focus-visible:ring-[#F9A61A]/25"
+const SELECT =
+  "flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-base " +
+  "text-gray-900 outline-none focus-visible:border-[#F9A61A] focus-visible:ring-2 " +
+  "focus-visible:ring-[#F9A61A]/25"
+
 type Data = {
   firstName: string; lastName: string; phone: string; email: string
   county: string; state: string
@@ -141,7 +153,7 @@ export function LandForm({
   const next = () => (step === STEPS.length - 1 ? submit() : setStep(step + 1))
 
   return (
-    <div className="rounded-xl bg-white p-6 shadow-xl sm:p-8">
+    <div className="rounded-xl bg-white p-6 text-gray-900 shadow-xl sm:p-8">
       <div className="text-center">
         <h2 className="text-[22px] font-bold leading-tight text-gray-900 sm:text-2xl">
           Get A FREE, No-Obligation Cash Offer
@@ -166,17 +178,17 @@ export function LandForm({
           <>
             <div className="grid grid-cols-2 gap-3">
               <Field label="First Name" required>
-                <Input value={d.firstName} onChange={(e) => set("firstName", e.target.value)} autoComplete="given-name" />
+                <Input className={FIELD} value={d.firstName} onChange={(e) => set("firstName", e.target.value)} autoComplete="given-name" />
               </Field>
               <Field label="Last Name" required>
-                <Input value={d.lastName} onChange={(e) => set("lastName", e.target.value)} autoComplete="family-name" />
+                <Input className={FIELD} value={d.lastName} onChange={(e) => set("lastName", e.target.value)} autoComplete="family-name" />
               </Field>
             </div>
             <Field label="Phone" required>
-              <Input value={d.phone} onChange={(e) => set("phone", e.target.value)} type="tel" inputMode="tel" autoComplete="tel" />
+              <Input className={FIELD} value={d.phone} onChange={(e) => set("phone", e.target.value)} type="tel" inputMode="tel" autoComplete="tel" />
             </Field>
             <Field label="Email Address" required>
-              <Input value={d.email} onChange={(e) => set("email", e.target.value)} type="email" inputMode="email" autoComplete="email" />
+              <Input className={FIELD} value={d.email} onChange={(e) => set("email", e.target.value)} type="email" inputMode="email" autoComplete="email" />
             </Field>
           </>
         )}
@@ -187,13 +199,13 @@ export function LandForm({
               Vacant land often has no street address. The county is enough for us to pull the parcel.
             </p>
             <Field label="County" required>
-              <Input value={d.county} onChange={(e) => set("county", e.target.value)} placeholder="e.g. Anson" />
+              <Input className={FIELD} value={d.county} onChange={(e) => set("county", e.target.value)} placeholder="e.g. Anson" />
             </Field>
             <Field label="State" required>
               <select
                 value={d.state}
                 onChange={(e) => set("state", e.target.value)}
-                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                className={SELECT}
               >
                 <option value="">Select a state</option>
                 {states.map((s) => <option key={s} value={s}>{s}</option>)}
@@ -205,16 +217,16 @@ export function LandForm({
         {step === 2 && (
           <>
             <Field label="Parcel Number / APN" hint="Optional. We will look it up if you do not have it.">
-              <Input value={d.parcelNumber} onChange={(e) => set("parcelNumber", e.target.value)} placeholder="e.g. 06-123-456" />
+              <Input className={FIELD} value={d.parcelNumber} onChange={(e) => set("parcelNumber", e.target.value)} placeholder="e.g. 06-123-456" />
             </Field>
             <Field label="Approx. Acres" hint="A rough number is fine.">
-              <Input value={d.acres} onChange={(e) => set("acres", e.target.value)} inputMode="decimal" placeholder="e.g. 12" />
+              <Input className={FIELD} value={d.acres} onChange={(e) => set("acres", e.target.value)} inputMode="decimal" placeholder="e.g. 12" />
             </Field>
             <Field label="How soon are you looking to sell?">
               <select
                 value={d.timeline}
                 onChange={(e) => set("timeline", e.target.value)}
-                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                className={SELECT}
               >
                 <option value="">Select one</option>
                 {TIMELINE.map((t) => <option key={t.id} value={t.id}>{t.label}</option>)}
