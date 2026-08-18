@@ -8,6 +8,10 @@ interface HeaderProps {
   logoUrl: string
   headerBgColor?: string
   ibuykcStyle?: boolean
+  /** Render as a wide banner at this pixel height and hide the company-name
+   *  text. Use when the logo file already contains the wordmark, otherwise the
+   *  brand name appears twice. Falls back to the LOGO_HEIGHT_PX env var. */
+  logoHeightPx?: number
 }
 
 // When LOGO_HEIGHT_PX is set the logo renders as a wide banner (height fixed,
@@ -17,8 +21,12 @@ interface HeaderProps {
 const LOGO_HEIGHT_PX = Number(process.env.LOGO_HEIGHT_PX || 0)
 const isBannerLogo = LOGO_HEIGHT_PX > 0
 
-export function Header({ companyName, phoneDisplay, phoneHref, logoUrl, headerBgColor = "#ffffff", ibuykcStyle = false }: HeaderProps) {
+export function Header({ companyName, phoneDisplay, phoneHref, logoUrl, headerBgColor = "#ffffff", ibuykcStyle = false, logoHeightPx }: HeaderProps) {
   const isDark = headerBgColor !== "#ffffff" && headerBgColor !== "white"
+  // Prop wins over the env default so one route can opt in without changing
+  // every other client cloned from this template.
+  const bannerHeight = logoHeightPx ?? LOGO_HEIGHT_PX
+  const banner = bannerHeight > 0
 
   return (
     <header className="w-full shadow-sm" style={{ backgroundColor: headerBgColor }}>
@@ -26,14 +34,14 @@ export function Header({ companyName, phoneDisplay, phoneHref, logoUrl, headerBg
         {/* Logo + Company Name */}
         <div className="flex items-center gap-3">
           {logoUrl && (
-            isBannerLogo ? (
+            banner ? (
               <Image
                 src={logoUrl}
                 alt={companyName}
-                width={Math.round(LOGO_HEIGHT_PX * 4)}
-                height={LOGO_HEIGHT_PX}
+                width={Math.round(bannerHeight * 4)}
+                height={bannerHeight}
                 className="flex-shrink-0 object-contain w-auto"
-                style={{ height: `${LOGO_HEIGHT_PX}px` }}
+                style={{ height: `${bannerHeight}px` }}
                 unoptimized
               />
             ) : (
@@ -47,7 +55,7 @@ export function Header({ companyName, phoneDisplay, phoneHref, logoUrl, headerBg
               />
             )
           )}
-          {!isBannerLogo && (
+          {!banner && (
             <span
               className="text-base font-bold leading-tight"
               style={{ color: isDark ? "white" : "var(--accent)" }}

@@ -40,9 +40,10 @@ export default function LandPage() {
         companyName={config.companyName}
         phoneDisplay={config.phoneDisplay}
         phoneHref={config.phoneHref}
-        logoUrl={config.logoUrl}
+        logoUrl="/logo-kind-acquisition.png"
         headerBgColor={config.headerBgColor}
         ibuykcStyle
+        logoHeightPx={64}
       />
 
       <LandUI
