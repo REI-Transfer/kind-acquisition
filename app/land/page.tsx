@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
 import { Poppins } from "next/font/google"
-import { SurveyCard } from "@/components/survey/survey-card"
+import { LandForm } from "@/components/survey/land-form"
 import { Header } from "@/components/layout/header"
 import { Footer } from "@/components/layout/footer"
 import config from "@/lib/config"
@@ -31,14 +31,6 @@ export const metadata: Metadata = {
 const HERO_IMAGES = ["/land/hero-1.jpg", "/land/hero-2.jpg", "/land/hero-3.jpg"]
 
 export default function LandPage() {
-  let parsedServiceAreas: Array<{ id: string; centerLat: number; centerLng: number; radiusMiles: number }> = []
-  try { parsedServiceAreas = JSON.parse(config.serviceAreas) } catch {}
-
-  // Land funnel: keep every other gate, but never disqualify land here.
-  const disqualifiedPropertyTypes = config.disqualifiedPropertyTypes
-    .split(",").map(s => s.trim()).filter(Boolean).filter(t => t !== "land")
-  const disqualifiedOwnershipLengths = config.disqualifiedOwnershipLengths
-    .split(",").map(s => s.trim()).filter(Boolean)
   const allowedStates = config.allowedStates
     .split(",").map(s => s.trim()).filter(Boolean)
 
@@ -56,15 +48,10 @@ export default function LandPage() {
       <LandUI
         heroImages={HERO_IMAGES}
         form={
-          <SurveyCard
+          <LandForm
+            allowedStates={allowedStates}
             phoneDisplay={config.phoneDisplay}
             phoneHref={config.phoneHref}
-            serviceAreas={parsedServiceAreas}
-            disqualifiedPropertyTypes={disqualifiedPropertyTypes}
-            disqualifiedOwnershipLengths={disqualifiedOwnershipLengths}
-            allowedStates={allowedStates}
-            motivationV2={config.motivationV2}
-            variant="land"
           />
         }
       />
