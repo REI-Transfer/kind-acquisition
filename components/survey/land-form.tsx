@@ -374,7 +374,7 @@ export function LandForm({
         )}
 
         <p className="flex items-center justify-center gap-1.5 text-center text-xs text-gray-400">
-          <Check className="h-3.5 w-3.5" /> No obligation. No fees. We never list your parcel publicly.
+          <Check className="h-3.5 w-3.5" /> No obligation. No fees. We never sell your info.
         </p>
         {phoneDisplay && (
           <p className="text-center text-xs text-gray-400">

@@ -63,6 +63,8 @@ export default function LandPage() {
         phoneHref={config.phoneHref}
         privacyPolicyUrl={config.privacyPolicyUrl}
         termsUrl={config.termsUrl}
+        taglineText="We buy land in any condition. No obligation, no pressure."
+        disclaimerText={`${config.companyName} purchases property for its own account and does not act as your agent.`}
       />
     </main>
   )
