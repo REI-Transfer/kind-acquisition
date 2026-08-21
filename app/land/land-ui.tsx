@@ -42,7 +42,6 @@ const REASONS = [
   { t: "Taxes and carrying costs", d: "A county tax bill every year for land that produces nothing, plus mowing and the occasional nuisance notice." },
   { t: "Present-use value coming due", d: "Land in farm or forestry deferral looks cheap to hold, right until the use changes and the deferred taxes land at once." },
   { t: "Probate or divorce", d: "An estate to settle or a split to finish, and the land has to become a number everyone can divide." },
-  { t: "The septic permit never came", d: "A failed soil evaluation from the county health department ends a build plan quietly. The land stays, the plan does not." },
   { t: "You moved away", d: "You cannot check on it, keep it bush-hogged, or answer a county letter from another state." },
   { t: "Timber came off and that was that", d: "Once a tract is cut, the reason to keep holding it often goes with the timber." },
   { t: "Land values are up in your county", d: "Some owners sell simply because the number today beats the one they expected." },
@@ -52,7 +51,7 @@ const VERIFY = [
   ["Ask who is handling the closing, then call them yourself.", "Both Carolinas close through a licensed attorney. Ask us for the firm and call their office directly, not through us. A buyer who will not name one is the clearest warning sign there is."],
   ["Ask for the legal business name and a physical address.", "We are based in Charlotte, North Carolina. Look us up in the Secretary of State registry for either state."],
   ["Ask for proof of funds.", "We send it before you sign anything. We buy with our own money, which is why we can commit to a closing date."],
-  ["Ask whether they will hand your contract to somebody else.", "Some buyers tie up a parcel, shop it around, and walk if nobody bites. You lose months and the land goes back on your tax bill."],
+  ["Ask what happens if their plans change.", "A real buyer closes on what they commit to. We buy with our own funds, so a change on our end never leaves your parcel tied up and back on your tax bill."],
 ]
 
 const FAQS = [
@@ -61,9 +60,10 @@ const FAQS = [
   ["What areas do you buy in?", "North Carolina and South Carolina only. All 100 NC counties and all 46 SC counties, from the coast through the Sandhills and Piedmont to the mountains. We are based in Charlotte."],
   ["What if I do not know my parcel number?", "Give us the county and roughly where the land sits. Parcel numbers are public record in every Carolina county and we will look it up for you."],
   ["Do I need to visit the property or clear anything?", "No. We buy as-is. You do not need to bush-hog it, have it surveyed, or set foot on it."],
-  ["What about back taxes, or land that will not perc?", "Tell us either way. Delinquent taxes and a failed soil evaluation are normal parts of the land we look at, and they get handled at closing rather than by you beforehand."],
+  ["What about back taxes?", "Delinquent taxes are handled at closing, not by you beforehand."],
+  ["What about soil and perc?", "Soil and perc are evaluated during due diligence."],
   ["Who handles the closing?", "A licensed closing attorney, which is how real estate closes in both Carolinas. You are welcome to call their office directly before you sign anything with us."],
-  ["How long does closing take, and how do I get paid?", "As little as 14 days once title work is clear. You choose a mailed check or a wire to your account."],
+  ["How does closing work, and how do I get paid?", "Once title work is clear we close, and you choose a mailed check or a wire to your account."],
 ]
 
 export function LandUI({ form, heroImages }: { form: ReactNode; heroImages: string[] }) {
@@ -191,6 +191,9 @@ export function LandUI({ form, heroImages }: { form: ReactNode; heroImages: stri
               </li>
             ))}
           </ul>
+          <p className="mt-9 rounded-lg bg-neutral-900 p-6 text-[16px] leading-[1.7] text-white">
+            {"We do not sell fast closings, we sell sure closings. When we commit, we close. If it is not a fit, we tell you right away and point you in the right direction."}
+          </p>
         </div>
       </section>
 
