@@ -11,6 +11,7 @@ export interface AddressDetails {
   state?: string
   city?: string
   county?: string
+  street?: string
 }
 
 export interface ServiceArea {
@@ -152,6 +153,8 @@ export function AddressAutocomplete({
       let state = ""
       let city = ""
       let county = ""
+      let streetNumber = ""
+      let route = ""
       let lat: number | undefined
       let lng: number | undefined
 
@@ -159,14 +162,17 @@ export function AddressAutocomplete({
         if (component.types.includes("administrative_area_level_1")) state = component.short_name
         if (component.types.includes("locality")) city = component.long_name
         if (component.types.includes("administrative_area_level_2")) county = component.long_name
+        if (component.types.includes("street_number")) streetNumber = component.long_name
+        if (component.types.includes("route")) route = component.long_name
       })
+      const street = [streetNumber, route].filter(Boolean).join(" ")
 
       if (place.geometry?.location) {
         lat = place.geometry.location.lat()
         lng = place.geometry.location.lng()
       }
 
-      const details: AddressDetails = { formattedAddress: place.formatted_address, lat, lng, state, city, county }
+      const details: AddressDetails = { formattedAddress: place.formatted_address, lat, lng, state, city, county, street }
 
       // State allow-list gate (env ALLOWED_STATES). When set, any address whose
       // state is not in the list is treated as out-of-area. Empty → no gate.

@@ -9,6 +9,8 @@ import { AddressAutocomplete, type AddressDetails, type ServiceArea } from "./ad
 
 interface SurveyData {
   address: string
+  county: string
+  streetAddress: string
   propertyType: string
   acreage: string
   access: string
@@ -282,6 +284,8 @@ export function SurveyCard({ phoneDisplay = "(800) 000-0000", phoneHref = "80000
   const [step, setStep] = useState(initialStep && initialStep >= 2 && initialStep <= 8 ? initialStep : 1)
   const [surveyData, setSurveyData] = useState<SurveyData>({
     address: initialAddress ?? "",
+    county: "",
+    streetAddress: "",
     propertyType: "",
     acreage: "",
     access: "",
@@ -378,6 +382,8 @@ export function SurveyCard({ phoneDisplay = "(800) 000-0000", phoneHref = "80000
           email: surveyData.email,
           phone: surveyData.phone,
           address: surveyData.address,
+          county: surveyData.county,
+          streetAddress: surveyData.streetAddress,
           propertyType: isLand ? 'land' : surveyData.propertyType,
           acreage: surveyData.acreage,
           landAccess: surveyData.access,
@@ -482,8 +488,8 @@ export function SurveyCard({ phoneDisplay = "(800) 000-0000", phoneHref = "80000
     setTimeout(() => { if (step < totalSteps) setStep(step + 1) }, 300)
   }
 
-  const handleAddressSelect = (address: string, _details: AddressDetails) => {
-    setSurveyData({ ...surveyData, address })
+  const handleAddressSelect = (address: string, details: AddressDetails) => {
+    setSurveyData({ ...surveyData, address, county: details.county || "", streetAddress: details.street || "" })
     setAddressVerified(true)
     setAddressOutOfArea(false)
     setTimeout(() => { setStep(2) }, 300)
