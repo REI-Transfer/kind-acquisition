@@ -118,7 +118,7 @@ export function LandForm({
   const phoneError = touched.phone && d.phone !== "" && !phoneCheck.valid ? phoneCheck.msg : ""
   const emailError = touched.email && d.email !== "" && !emailCheck.valid ? emailCheck.msg : ""
 
-  const states = allowedStates.length ? allowedStates : ["NC", "SC"]
+  const states = allowedStates.length ? allowedStates : ["NC"]
 
   const canAdvance =
     step === 0
