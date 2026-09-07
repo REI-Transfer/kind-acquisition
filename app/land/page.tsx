@@ -7,7 +7,7 @@ import config from "@/lib/config"
 import { LandUI } from "./land-ui"
 
 /**
- * /land — Kind Acquisition's vacant-land funnel for North and South Carolina.
+ * /land — Kind Acquisition's vacant-land funnel for North Carolina.
  *
  * Visual system is a recolor of the 887-day category winner's lander, read from
  * source: reference/land-clone-spec-freedom-land-network.md.
@@ -23,9 +23,9 @@ import { LandUI } from "./land-ui"
 const poppins = Poppins({ subsets: ["latin"], weight: ["400", "600", "700"], display: "swap" })
 
 export const metadata: Metadata = {
-  title: "Sell Your Land Fast For Cash | North & South Carolina | Kind Acquisition",
+  title: "Sell Your Land Fast For Cash | North Carolina | Kind Acquisition",
   description:
-    "We buy vacant land across North and South Carolina for cash. Written offer in one business day, no commissions, no closing costs. Charlotte based.",
+    "We buy vacant land across North Carolina for cash. Written offer in one business day, no commissions, no closing costs. Charlotte based.",
 }
 
 const HERO_IMAGES = ["/land/hero-1.jpg", "/land/hero-2.jpg", "/land/hero-3.jpg"]

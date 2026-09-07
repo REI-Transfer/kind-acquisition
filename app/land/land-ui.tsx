@@ -26,13 +26,13 @@ const PROCESS = [
   { n: "1", t: "Tell us where the land is", d: "County, state, and parcel number if you have it. That is enough for us to evaluate it." },
   { n: "2", t: "Receive a cash offer", d: "A straightforward all-cash number, in writing, within one business day." },
   { n: "3", t: "Sign the agreement", d: "Plain documents you can sign through email. No office visit, no trip to the property." },
-  { n: "4", t: "We schedule the closing", d: "Through a licensed Carolina closing attorney, on a date that works for you." },
+  { n: "4", t: "We schedule the closing", d: "Through a licensed North Carolina closing attorney, on a date that works for you." },
   { n: "5", t: "You get your cash", d: "Sign the deed and receive funds by mailed check or wire, whichever you prefer." },
 ]
 
 const PILLARS = [
-  { t: "Land is what we actually do", d: "Plenty of house buyers will take a parcel if it falls in their lap. Land has been our bread and butter for years, and it is why we can price a Carolina tract properly instead of guessing low to cover ourselves." },
-  { t: "We know these counties", d: "A tract in Anson prices nothing like a lot in Mecklenburg, and a mountain parcel in Ashe is a different animal again. We buy across all 100 North Carolina counties and all 46 in South Carolina." },
+  { t: "Land is what we actually do", d: "Plenty of house buyers will take a parcel if it falls in their lap. Land has been our bread and butter for years, and it is why we can price a North Carolina tract properly instead of guessing low to cover ourselves." },
+  { t: "We know these counties", d: "A tract in Anson prices nothing like a lot in Mecklenburg, and a mountain parcel in Ashe is a different animal again. We buy across all 100 North Carolina counties, from the coast to the mountains." },
   { t: "No fees or commissions", d: "No listing fee, no commission, no closing costs. The number we put in writing is the number you receive at closing." },
   { t: "Five steps to cash", d: "We buy directly, which cuts the parts of a land sale that drag: no listing period, no showings, and no buyer whose financing can collapse." },
 ]
@@ -48,8 +48,8 @@ const REASONS = [
 ]
 
 const VERIFY = [
-  ["Ask who is handling the closing, then call them yourself.", "Both Carolinas close through a licensed attorney. Ask us for the firm and call their office directly, not through us. A buyer who will not name one is the clearest warning sign there is."],
-  ["Ask for the legal business name and a physical address.", "We are based in Charlotte, North Carolina. Look us up in the Secretary of State registry for either state."],
+  ["Ask who is handling the closing, then call them yourself.", "North Carolina closes through a licensed attorney. Ask us for the firm and call their office directly, not through us. A buyer who will not name one is the clearest warning sign there is."],
+  ["Ask for the legal business name and a physical address.", "We are based in Charlotte, North Carolina. Look us up in the North Carolina Secretary of State registry."],
   ["Ask for proof of funds.", "We send it before you sign anything. We buy with our own money, which is why we can commit to a closing date."],
   ["Ask what happens if their plans change.", "A real buyer closes on what they commit to. We buy with our own funds, so a change on our end never leaves your parcel tied up and back on your tax bill."],
 ]
@@ -57,12 +57,12 @@ const VERIFY = [
 const FAQS = [
   ["How fast can I get an offer on my land?", "Within one business day of getting your parcel details. We pull the county record ourselves, so you do not gather paperwork or pay anything up front."],
   ["Are there any fees, commissions, or closing costs?", "No. No commissions, no listing fees, and no closing costs. What we put in writing is what you receive."],
-  ["What areas do you buy in?", "North Carolina and South Carolina only. All 100 NC counties and all 46 SC counties, from the coast through the Sandhills and Piedmont to the mountains. We are based in Charlotte."],
-  ["What if I do not know my parcel number?", "Give us the county and roughly where the land sits. Parcel numbers are public record in every Carolina county and we will look it up for you."],
+  ["What areas do you buy in?", "North Carolina only. All 100 NC counties, from the coast through the Sandhills and Piedmont to the mountains. We are based in Charlotte."],
+  ["What if I do not know my parcel number?", "Give us the county and roughly where the land sits. Parcel numbers are public record in every North Carolina county and we will look it up for you."],
   ["Do I need to visit the property or clear anything?", "No. We buy as-is. You do not need to bush-hog it, have it surveyed, or set foot on it."],
   ["What about back taxes?", "Delinquent taxes are handled at closing, not by you beforehand."],
   ["What about soil and perc?", "Soil and perc are evaluated during due diligence."],
-  ["Who handles the closing?", "A licensed closing attorney, which is how real estate closes in both Carolinas. You are welcome to call their office directly before you sign anything with us."],
+  ["Who handles the closing?", "A licensed closing attorney, which is how real estate closes in North Carolina. You are welcome to call their office directly before you sign anything with us."],
   ["How does closing work, and how do I get paid?", "Once title work is clear we close, and you choose a mailed check or a wire to your account."],
 ]
 
@@ -90,10 +90,10 @@ export function LandUI({ form, heroImages }: { form: ReactNode; heroImages: stri
         <div className="relative mx-auto grid max-w-7xl gap-10 px-4 py-14 lg:grid-cols-[1.02fr_.98fr] lg:items-center lg:gap-16 lg:px-8 lg:py-24">
           <div>
             <h1 className="text-center text-[2.15rem] font-bold uppercase leading-[1.12] text-white text-balance sm:text-[2.75rem] lg:text-left lg:text-[3.6rem] lg:leading-[1.08]">
-              We Buy Vacant Land In The Carolinas For <span style={{ color: AMBER }}>Cash</span>
+              We Buy Vacant Land In North Carolina For <span style={{ color: AMBER }}>Cash</span>
             </h1>
             <ul className="mt-8 grid gap-3.5 sm:grid-cols-2">
-              {["Offer in 24 hours", "We pay all closing costs", "Any condition, any access", "North & South Carolina"].map((b) => (
+              {["Offer in 24 hours", "We pay all closing costs", "Any condition, any access", "All of North Carolina"].map((b) => (
                 <li key={b} className="flex items-center gap-3 text-base font-semibold text-white">
                   <svg viewBox="0 0 20 20" className="h-5 w-5 shrink-0" style={{ fill: AMBER }} aria-hidden="true">
                     <path d="M10 0a10 10 0 100 20 10 10 0 000-20zm4.7 7.6l-5.3 6a1 1 0 01-1.5 0L5.3 11a1 1 0 111.5-1.3l1.9 2.1 4.5-5.1a1 1 0 111.5 1.3z" />
@@ -103,7 +103,7 @@ export function LandUI({ form, heroImages }: { form: ReactNode; heroImages: stri
               ))}
             </ul>
             <p className="mt-7 text-center text-[15px] leading-relaxed text-neutral-300 lg:text-left">
-              Carolina land often has no street address. The county and a rough location is enough to start.
+              North Carolina land often has no street address. The county and a rough location is enough to start.
             </p>
           </div>
           <div>{form}</div>
@@ -143,7 +143,7 @@ export function LandUI({ form, heroImages }: { form: ReactNode; heroImages: stri
         <div className="mx-auto max-w-6xl px-4 lg:px-8">
           <h2 className="text-center text-[1.9rem] font-bold text-neutral-900 md:text-[2.5rem] md:leading-[1.15]">Why work with Kind Acquisition?</h2>
           <p className="mx-auto mt-6 max-w-2xl text-center text-[18px] leading-[1.7] text-neutral-600">
-            There are plenty of realtors, land buyers, and out-of-state companies making offers on Carolina land right now. Here is what separates us.
+            There are plenty of realtors, land buyers, and out-of-state companies making offers on North Carolina land right now. Here is what separates us.
           </p>
           <div className="mt-12 grid gap-7 md:grid-cols-2">
             {PILLARS.map((p) => (
@@ -168,7 +168,7 @@ export function LandUI({ form, heroImages }: { form: ReactNode; heroImages: stri
             What an auction does not put up front is the rest of it. You pay the marketing. You wait for a sale date. You may pay a buyer&apos;s premium on top of a commission. And on the day, the price is whoever shows up.
           </p>
           <p className="mt-5 text-[18px] leading-[1.75] text-neutral-300">
-            Listing has the same problem in slower form. Raw land does not qualify for an ordinary mortgage, so your buyer pool is people paying cash, and Carolina tracts routinely sit while the county tax bill keeps arriving.
+            Listing has the same problem in slower form. Raw land does not qualify for an ordinary mortgage, so your buyer pool is people paying cash, and North Carolina tracts routinely sit while the county tax bill keeps arriving.
           </p>
           <p className="mt-8 text-[18px] font-semibold leading-[1.7]">
             Our offer is a number, in writing, in a day, that does not move. Compare it against anything you like. If somebody beats it, take theirs.
@@ -200,7 +200,7 @@ export function LandUI({ form, heroImages }: { form: ReactNode; heroImages: stri
       {/* ── reasons ── */}
       <section className="border-t border-neutral-200 py-20 md:py-28" style={{ backgroundColor: "#FEF7EA" }}>
         <div className="mx-auto max-w-6xl px-4 lg:px-8">
-          <h2 className="text-center text-[1.9rem] font-bold text-neutral-900 md:text-[2.5rem] md:leading-[1.15]">Reasons people sell Carolina land</h2>
+          <h2 className="text-center text-[1.9rem] font-bold text-neutral-900 md:text-[2.5rem] md:leading-[1.15]">Reasons people sell North Carolina land</h2>
           <p className="mx-auto mt-6 max-w-2xl text-center text-[17px] leading-[1.7] text-neutral-600">
             Land does not fall apart the way a house does. It just quietly costs you money every year for something you never use.
           </p>
@@ -236,7 +236,7 @@ export function LandUI({ form, heroImages }: { form: ReactNode; heroImages: stri
       {/* ── closing strip ── */}
       <div className="py-16 text-center md:py-24" style={{ background: `linear-gradient(100deg, ${AMBER} 0%, ${AMBER_DK} 100%)` }}>
         <div className="mx-auto max-w-3xl px-4">
-          <h2 className="text-[1.9rem] font-bold text-neutral-900 md:text-[2.5rem] md:leading-[1.15]">Turn Your Carolina Land Into Cash</h2>
+          <h2 className="text-[1.9rem] font-bold text-neutral-900 md:text-[2.5rem] md:leading-[1.15]">Turn Your North Carolina Land Into Cash</h2>
           <p className="mx-auto mt-4 max-w-xl text-[18px] leading-[1.65] text-neutral-900/80">
             One business day, no fee, no obligation. If the number is not right for you, nothing happens.
           </p>

@@ -29,7 +29,7 @@ export const metadata: Metadata = {
 const NEXT_STEPS = [
   { n: "1", t: "We pull the county record", d: "Parcel, acreage, tax status and access, straight from the county. You do not need to gather anything or pay for a survey." },
   { n: "2", t: "You get a written offer", d: "Within one business day. A real number with no conditions buried underneath it, and no obligation to accept." },
-  { n: "3", t: "You pick the closing date", d: "If the number works, closing goes through a licensed Carolina attorney. We cover the closing costs." },
+  { n: "3", t: "You pick the closing date", d: "If the number works, closing goes through a licensed North Carolina attorney. We cover the closing costs." },
 ]
 
 export default function LandThankYouPage() {
