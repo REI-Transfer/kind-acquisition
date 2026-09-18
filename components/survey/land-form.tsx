@@ -273,16 +273,16 @@ export function LandForm({
   }
 
   return (
-    <div className="relative rounded-xl bg-white p-6 text-gray-900 shadow-xl sm:p-8">
+    <div className="relative rounded-xl bg-white p-4 text-gray-900 shadow-xl sm:p-8">
       <div className="text-center">
-        <h2 className="text-[22px] font-bold leading-tight text-gray-900 sm:text-2xl">
+        <h2 className="text-[19px] font-bold leading-tight text-gray-900 sm:text-2xl">
           Get A FREE, No-Obligation Cash Offer
         </h2>
-        <p className="mt-1.5 text-sm text-gray-500">Provide your land&apos;s information</p>
+        <p className="mt-1 text-sm text-gray-500">Provide your land&apos;s information</p>
       </div>
 
       {/* three-step rail, mirroring the winner's Contact / Location / Specifics */}
-      <div className="mt-6 flex gap-2">
+      <div className="mt-3 flex gap-2 sm:mt-6">
         {STEPS.map((label, i) => (
           <div key={label} className="flex-1">
             <div className={`h-1.5 rounded-full ${i <= step ? "bg-[#F9A61A]" : "bg-gray-200"}`} />
@@ -293,7 +293,7 @@ export function LandForm({
         ))}
       </div>
 
-      <div className="mt-6 flex flex-col gap-4">
+      <div className="mt-4 flex flex-col gap-3 sm:mt-6 sm:gap-4">
         {step === 0 && (
           <>
             <div className="grid grid-cols-2 gap-3">
