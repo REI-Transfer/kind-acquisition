@@ -87,22 +87,22 @@ export function LandUI({ form, heroImages }: { form: ReactNode; heroImages: stri
           className="absolute inset-0"
           style={{ background: "linear-gradient(100deg,rgba(8,8,8,.92) 0%,rgba(8,8,8,.74) 44%,rgba(8,8,8,.42) 100%)" }}
         />
-        <div className="relative mx-auto grid max-w-7xl gap-10 px-4 py-14 lg:grid-cols-[1.02fr_.98fr] lg:items-center lg:gap-16 lg:px-8 lg:py-24">
+        <div className="relative mx-auto grid max-w-7xl gap-4 px-4 py-5 sm:gap-10 sm:py-14 lg:grid-cols-[1.02fr_.98fr] lg:items-center lg:gap-16 lg:px-8 lg:py-24">
           <div>
-            <h1 className="text-center text-[2.15rem] font-bold uppercase leading-[1.12] text-white text-balance sm:text-[2.75rem] lg:text-left lg:text-[3.6rem] lg:leading-[1.08]">
+            <h1 className="text-center text-[1.55rem] font-bold uppercase leading-[1.12] text-white text-balance sm:text-[2.75rem] lg:text-left lg:text-[3.6rem] lg:leading-[1.08]">
               We Buy Vacant Land In North Carolina For <span style={{ color: AMBER }}>Cash</span>
             </h1>
-            <ul className="mt-8 grid gap-3.5 sm:grid-cols-2">
+            <ul className="mt-3 grid grid-cols-2 gap-x-3 gap-y-1.5 sm:mt-8 sm:gap-3.5">
               {["Offer in 24 hours", "We pay all closing costs", "Any condition, any access", "All of North Carolina"].map((b) => (
-                <li key={b} className="flex items-center gap-3 text-base font-semibold text-white">
-                  <svg viewBox="0 0 20 20" className="h-5 w-5 shrink-0" style={{ fill: AMBER }} aria-hidden="true">
+                <li key={b} className="flex items-center gap-1.5 text-[13px] font-semibold leading-tight text-white sm:gap-3 sm:text-base">
+                  <svg viewBox="0 0 20 20" className="h-4 w-4 shrink-0 sm:h-5 sm:w-5" style={{ fill: AMBER }} aria-hidden="true">
                     <path d="M10 0a10 10 0 100 20 10 10 0 000-20zm4.7 7.6l-5.3 6a1 1 0 01-1.5 0L5.3 11a1 1 0 111.5-1.3l1.9 2.1 4.5-5.1a1 1 0 111.5 1.3z" />
                   </svg>
                   {b}
                 </li>
               ))}
             </ul>
-            <p className="mt-7 text-center text-[15px] leading-relaxed text-neutral-300 lg:text-left">
+            <p className="mt-7 hidden text-center text-[15px] leading-relaxed text-neutral-300 sm:block lg:text-left">
               North Carolina land often has no street address. The county and a rough location is enough to start.
             </p>
           </div>
