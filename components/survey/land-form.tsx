@@ -109,6 +109,12 @@ export function LandForm({
   // Bots submit near-instantly. A human cannot complete step 1 in under ~3s.
   const [mountedAt] = useState(() => Date.now())
   const [dq, setDq] = useState<"" | "notOwner" | "listed">("")
+  // Two-step lead capture. Contact is already this form's first step, so the
+  // early lead goes out the moment it is filled: an abandon at step 2-4 still
+  // reaches n8n as a partial. Ownership/listed DQs then send 'disqualified' so
+  // the partial is never forwarded to the CRM. The final submit is 'complete'.
+  const [stage1Id] = useState(() => `land_early_${Date.now()}_${Math.random().toString(36).slice(2, 10)}`)
+  const [earlySent, setEarlySent] = useState(false)
 
   const set = (k: keyof Data, v: string) =>
     setD((p) => ({ ...p, [k]: k === "phone" ? formatPhoneNumber(v) : v }))
@@ -167,6 +173,8 @@ export function LandForm({
       meta_event_id: eventId,
       meta_event_name: "Lead",
       meta_value: score * 25,
+      lead_stage: "complete",
+      stage1_event_id: stage1Id,
       website, // honeypot, must be empty. Server rejects if filled.
       form_render_ms: Date.now() - mountedAt,
       gf_sid: readGfSid(),
@@ -189,7 +197,62 @@ export function LandForm({
     }
   }
 
-  const next = () => (step === STEPS.length - 1 ? submit() : setStep(step + 1))
+  const contactFields = () => ({
+    firstName: d.firstName.trim(),
+    lastName: d.lastName.trim(),
+    name: `${d.firstName.trim()} ${d.lastName.trim()}`.trim(),
+    email: d.email.trim().toLowerCase(),
+    phone: phoneDigits(d.phone),
+    propertyType: "land",
+    website,
+    gf_sid: readGfSid(),
+    ...captureTrackingData(),
+  })
+
+  // Fire-and-forget: the user stays on this page, so nothing waits on it.
+  const post = (body: Record<string, unknown>) =>
+    fetch("/api/submit", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) }).catch(() => {})
+
+  const sendEarly = () => {
+    if (earlySent || website.trim() !== "") return
+    setEarlySent(true)
+    const w = typeof window !== "undefined" ? (window as { fbq?: (...a: unknown[]) => void }) : undefined
+    w?.fbq?.("trackCustom", "LeadEarly", { content_name: "Kind Acquisition Land" }, { eventID: stage1Id })
+    post({
+      ...contactFields(),
+      // /api/submit requires an address; land location is asked at step 3.
+      address: `Vacant land, ${states[0]} (location not given yet)`,
+      state: states[0],
+      source: "Land Form (Stage 1)",
+      submittedAt: new Date().toISOString(),
+      lead_stage: "early",
+      meta_event_id: stage1Id,
+      meta_event_name: "LeadEarly",
+      form_render_ms: Date.now() - mountedAt,
+    })
+  }
+
+  const disqualifyLand = (reason: "notOwner" | "listed", field: "isLegalOwner" | "listedOnMarket", value: string) => {
+    setDq(reason)
+    post({
+      ...contactFields(),
+      address: `Vacant land, ${states[0]} (location not given yet)`,
+      state: states[0],
+      isLegalOwner: field === "isLegalOwner" ? value : d.isLegalOwner,
+      listedOnMarket: field === "listedOnMarket" ? value : d.listedOnMarket,
+      source: "Land Form (disqualified)",
+      submittedAt: new Date().toISOString(),
+      lead_stage: "disqualified",
+      disqualify_reason: reason,
+      stage1_event_id: stage1Id,
+      qualified: false,
+    })
+  }
+
+  const next = () => {
+    if (step === 0) sendEarly()
+    return step === STEPS.length - 1 ? submit() : setStep(step + 1)
+  }
 
   if (dq) {
     return (
@@ -293,7 +356,7 @@ export function LandForm({
                     key={o.id}
                     label={o.label}
                     selected={d.isLegalOwner === o.id}
-                    onClick={() => { set("isLegalOwner", o.id); if (o.id === "no") setDq("notOwner") }}
+                    onClick={() => { set("isLegalOwner", o.id); if (o.id === "no") disqualifyLand("notOwner", "isLegalOwner", o.id) }}
                   />
                 ))}
               </div>
@@ -306,7 +369,7 @@ export function LandForm({
                     key={o.id}
                     label={o.label}
                     selected={d.listedOnMarket === o.id}
-                    onClick={() => { set("listedOnMarket", o.id); if (o.id !== "not-listed") setDq("listed") }}
+                    onClick={() => { set("listedOnMarket", o.id); if (o.id !== "not-listed") disqualifyLand("listed", "listedOnMarket", o.id) }}
                   />
                 ))}
               </div>
