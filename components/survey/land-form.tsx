@@ -216,8 +216,6 @@ export function LandForm({
   const sendEarly = () => {
     if (earlySent || website.trim() !== "") return
     setEarlySent(true)
-    const w = typeof window !== "undefined" ? (window as { fbq?: (...a: unknown[]) => void }) : undefined
-    w?.fbq?.("trackCustom", "LeadEarly", { content_name: "Kind Acquisition Land" }, { eventID: stage1Id })
     post({
       ...contactFields(),
       // /api/submit requires an address; land location is asked at step 3.
