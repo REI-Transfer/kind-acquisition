@@ -85,6 +85,7 @@ const TIMELINE = [
 // Scored the land way: an owner who cannot move the parcel any other way is our
 // best lead, not our worst.
 const SCORE_TIMELINE: Record<string, number> = { asap: 3, "1-3-months": 2, "3-6-months": 1, exploring: 0 }
+const TIMELINE_NEUTRAL = 2
 const SCORE_ACRES = (a: string) => {
   const n = parseFloat(a)
   if (!isFinite(n)) return 1
@@ -146,7 +147,7 @@ export function LandForm({
     setSubmitting(true); setError("")
     // ?? binds looser than +, so the parens matter: without them a set timeline
     // would swallow the acreage score entirely.
-    const score = (SCORE_TIMELINE[d.timeline] ?? 0) + SCORE_ACRES(d.acres)
+    const score = (d.timeline ? (SCORE_TIMELINE[d.timeline] ?? 0) : TIMELINE_NEUTRAL) + SCORE_ACRES(d.acres)
     const eventId = `land_${Date.now()}_${Math.random().toString(36).slice(2, 10)}`
     const payload = {
       firstName: d.firstName.trim(),
@@ -403,16 +404,6 @@ export function LandForm({
             </Field>
             <Field label="Approx. Acres" hint="A rough number is fine.">
               <Input className={FIELD} value={d.acres} onChange={(e) => set("acres", e.target.value)} inputMode="decimal" placeholder="e.g. 12" />
-            </Field>
-            <Field label="How soon are you looking to sell?">
-              <select
-                value={d.timeline}
-                onChange={(e) => set("timeline", e.target.value)}
-                className={SELECT}
-              >
-                <option value="">Select one</option>
-                {TIMELINE.map((t) => <option key={t.id} value={t.id}>{t.label}</option>)}
-              </select>
             </Field>
           </>
         )}
